@@ -1,10 +1,10 @@
 {
   "mappings": [
-    "/content/aem-boilerplate/:/",
-    "/content/aem-boilerplate/configuration:/.helix/config.json",
-    "/content/aem-boilerplate/metadata:/metadata.json"
+    "/content/aem-ue-eds-airaffair/:/",
+    "/content/aem-ue-eds-airaffair/configuration:/.helix/config.json",
+    "/content/aem-ue-eds-airaffair/metadata:/metadata.json"
   ],
   "includes": [
-    "/content/aem-boilerplate/"
+    "/content/aem-ue-eds-airaffair/"
   ]
 }
