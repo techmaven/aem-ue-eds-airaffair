@@ -1,10 +1,10 @@
 {
   "mappings": [
-    "/content/aem-ue-eds-airaffair/:/",
-    "/content/aem-ue-eds-airaffair/configuration:/.helix/config.json",
-    "/content/aem-ue-eds-airaffair/metadata:/metadata.json"
+    "/content/roliver-aem-ue-eds-airaffair/:/",
+    "/content/roliver-aem-ue-eds-airaffair/configuration:/.helix/config.json",
+    "/content/roliver-aem-ue-eds-airaffair/metadata:/metadata.json"
   ],
   "includes": [
-    "/content/aem-ue-eds-airaffair/"
+    "/content/roliver-aem-ue-eds-airaffair/"
   ]
 }
