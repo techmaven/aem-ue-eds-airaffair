@@ -44,7 +44,7 @@
         {
           "component": "richtext",
           "name": "smalltext",
-          "value": "",
+          "value": "Sample Text",
           "label": "Small Text",
           "valueType": "string"
         }
