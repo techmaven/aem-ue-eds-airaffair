@@ -40,6 +40,13 @@
           "value": "",
           "label": "Text",
           "valueType": "string"
+        },
+        {
+          "component": "richtext",
+          "name": "smalltext",
+          "value": "",
+          "label": "Small Text",
+          "valueType": "string"
         }
       ]
     }
