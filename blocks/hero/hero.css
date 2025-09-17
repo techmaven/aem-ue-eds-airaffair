@@ -30,9 +30,9 @@
   height: 100%;
 }
 
-div.hero-block:nth-child(3).div p {
+div.hero-block p {
   text-align: right;
-  fornt-size: small;
+  font-size: small;
   margin-top: 15em;
 }
 
