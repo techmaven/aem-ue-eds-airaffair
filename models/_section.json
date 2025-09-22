@@ -50,7 +50,13 @@
         "hero",
         "cards",
         "columns",
-        "fragment"
+        "fragment",
+        "accordion",
+        "carousel",
+        "tabs",
+        "quote",
+        "search",
+        "table"
       ]
     }
   ]
