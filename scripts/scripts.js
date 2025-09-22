@@ -26,7 +26,7 @@ export function moveAttributes(from, to, attributes) {
     const value = from.getAttribute(attr);
     if (value) {
       to?.setAttribute(attr, value);
-      from.removeAttribute(attr);
+      from?.removeAttribute(attr);
     }
   });
 }
