@@ -72,6 +72,24 @@ function buildAutoBlocks() {
 }
 
 /**
+ * When there are multiple buttons in a row, display them next to each other.
+ */
+
+export function groupMultipleButtons(main) {
+  const buttons = main.querySelectorAll('p.button-container');
+  buttons.forEach((button) => {
+    if (button.nextElementSibling && button.nextElementSibling.classList.contains('button-container')) {
+      const siblingButton = button.nextElementSibling;
+      if (siblingButton && !button.parentElement.classList.contains('buttons-container')) {
+        const buttonContainer = createTag('div', { class: 'buttons-container' });
+        button.parentElement.insertBefore(buttonContainer, button);
+        buttonContainer.append(button, siblingButton);
+      }
+    }
+  });
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -120,6 +138,8 @@ async function loadLazy(doc) {
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
+
+  groupMultipleButtons(main);
 
   if (!doc.body.classList.contains("home")) {
     loadHeader(doc.querySelector('header'));
