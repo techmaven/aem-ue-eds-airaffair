@@ -71,6 +71,24 @@ function buildAutoBlocks() {
   }
 }
 
+export function createTag(tag, attributes, html = undefined) {
+  const element = document.createElement(tag);
+  if (html) {
+    if (html instanceof HTMLElement || html instanceof SVGElement) {
+      element.append(html);
+    } else {
+      element.insertAdjacentHTML('beforeend', html);
+    }
+  }
+  if (attributes) {
+    Object.entries(attributes)
+      .forEach(([key, val]) => {
+        element.setAttribute(key, val);
+      });
+  }
+  return element;
+}
+
 /**
  * When there are multiple buttons in a row, display them next to each other.
  */
@@ -141,7 +159,7 @@ async function loadLazy(doc) {
 
   groupMultipleButtons(main);
 
-  if (!doc.body.classList.contains("home")) {
+  if (!doc.body.classList.contains('home')) {
     loadHeader(doc.querySelector('header'));
   }
   loadFooter(doc.querySelector('footer'));
