@@ -93,8 +93,8 @@ export function createTag(tag, attributes, html = undefined) {
  * When there are multiple buttons in a row, display them next to each other.
  */
 
-export function groupMultipleButtons(main) {
-  const buttons = main.querySelectorAll('p.button-container');
+export function groupMultipleButtons(doc) {
+  const buttons = doc.querySelectorAll('p.button-container');
   buttons.forEach((button) => {
     if (button.nextElementSibling && button.nextElementSibling.classList.contains('button-container')) {
       const siblingButton = button.nextElementSibling;
@@ -157,7 +157,7 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  groupMultipleButtons(main);
+  groupMultipleButtons(doc);
 
   if (!doc.body.classList.contains('home')) {
     loadHeader(doc.querySelector('header'));
