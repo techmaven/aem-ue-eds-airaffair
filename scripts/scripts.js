@@ -93,19 +93,40 @@ export function createTag(tag, attributes, html = undefined) {
  * When there are multiple buttons in a row, display them next to each other.
  */
 
-export function groupMultipleButtons(doc) {
-  const buttons = doc.querySelectorAll('p.button-container');
-  buttons.forEach((button) => {
-    if (button.nextElementSibling && button.nextElementSibling.classList.contains('button-container')) {
-      const siblingButton = button.nextElementSibling;
-      if (siblingButton && !button.parentElement.classList.contains('buttons-container')) {
-        const buttonContainer = createTag('div', { class: 'buttons-container' });
-        button.parentElement.insertBefore(buttonContainer, button);
-        buttonContainer.append(button, siblingButton);
-      }
+function wrapButtonGroups(doc) {
+  const paragraphs = doc.querySelectorAll("p.button-container");
+
+  // Track processed elements to avoid duplicates
+  const processed = new Set();
+
+  paragraphs.forEach((p) => {
+    if (processed.has(p)) return;
+
+    const group = [p];
+    let next = p.nextElementSibling;
+
+    // Collect consecutive siblings with the same class
+    while (next && next.matches("p.button-container")) {
+      group.push(next);
+      processed.add(next);
+      next = next.nextElementSibling;
     }
+
+    // Create wrapper div
+    const wrapper = document.createElement("div");
+    wrapper.className = "buttons-container";
+
+    // Insert wrapper before the first element in the group
+    p.parentNode.insertBefore(wrapper, p);
+
+    // Move each element into the wrapper
+    group.forEach((el) => {
+      wrapper.appendChild(el);
+      processed.add(el);
+    });
   });
 }
+
 
 /**
  * Decorates the main element.
@@ -119,6 +140,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  wrapButtonGroups(main);
 }
 
 /**
@@ -157,7 +179,6 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  groupMultipleButtons(doc);
 
   if (!doc.body.classList.contains('home')) {
     loadHeader(doc.querySelector('header'));
