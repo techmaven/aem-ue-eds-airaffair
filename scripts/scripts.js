@@ -94,7 +94,7 @@ export function createTag(tag, attributes, html = undefined) {
  */
 
 function wrapButtonGroups(doc) {
-  const paragraphs = doc.querySelectorAll("p.button-container");
+  const paragraphs = doc.querySelectorAll('p.button-container');
 
   // Track processed elements to avoid duplicates
   const processed = new Set();
@@ -106,15 +106,15 @@ function wrapButtonGroups(doc) {
     let next = p.nextElementSibling;
 
     // Collect consecutive siblings with the same class
-    while (next && next.matches("p.button-container")) {
+    while (next && next.matches('p.button-container')) {
       group.push(next);
       processed.add(next);
       next = next.nextElementSibling;
     }
 
     // Create wrapper div
-    const wrapper = document.createElement("div");
-    wrapper.className = "buttons-container";
+    const wrapper = document.createElement('div');
+    wrapper.className = 'buttons-container';
 
     // Insert wrapper before the first element in the group
     p.parentNode.insertBefore(wrapper, p);
@@ -126,7 +126,6 @@ function wrapButtonGroups(doc) {
     });
   });
 }
-
 
 /**
  * Decorates the main element.
@@ -178,7 +177,6 @@ async function loadLazy(doc) {
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
-
 
   if (!doc.body.classList.contains('home')) {
     loadHeader(doc.querySelector('header'));
