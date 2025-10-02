@@ -69,7 +69,7 @@
         },
         {
           "component": "richtext",
-          "name": "content_text",
+          "name": "text",
           "value": "",
           "label": "Text",
           "valueType": "string"
