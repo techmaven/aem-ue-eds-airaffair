@@ -38,6 +38,7 @@
 
   /* nav height */
   --nav-height: 64px;
+  --header-height: var(--nav-height);
 }
 
 /* fallback fonts */
@@ -265,4 +266,8 @@ main .section.highlight {
 
 .buttons-container a.button {
   margin: 8px;
+}
+
+.section.hidden {
+  display: none;
 }

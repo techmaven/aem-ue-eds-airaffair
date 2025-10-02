@@ -26,15 +26,10 @@
           "description": "The label shown for this section in the Content Tree"
         },
         {
-          "component": "multiselect",
+          "component": "text",
           "name": "style",
           "label": "Style",
-          "options": [
-            {
-              "name": "Highlight",
-              "value": "highlight"
-            }
-          ]
+          "valueType": "string"
         }
       ]
     }
@@ -52,11 +47,9 @@
         "columns",
         "fragment",
         "accordion",
-        "carousel",
         "tabs",
-        "quote",
-        "search",
-        "table"
+        "embed",
+        "quote"
       ]
     }
   ]
