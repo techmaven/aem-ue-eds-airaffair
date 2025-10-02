@@ -19,6 +19,9 @@
       "accordion",
       "tabs",
       "embed",
+      "carousel",
+      "search",
+      "table",
       "quote"
     ]
   },
