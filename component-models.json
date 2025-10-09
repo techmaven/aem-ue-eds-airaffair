@@ -217,12 +217,6 @@
     "id": "carousel-item",
     "fields": [
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "classes",
-        "label": "Style"
-      },
-      {
         "component": "reference",
         "valueType": "string",
         "name": "media_image",
