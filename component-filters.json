@@ -22,13 +22,20 @@
       "carousel",
       "search",
       "table",
-      "quote"
+      "quote",
+      "books"
     ]
   },
   {
     "id": "accordion",
     "components": [
       "accordion-item"
+    ]
+  },
+  {
+    "id": "books",
+    "components": [
+      "book"
     ]
   },
   {
