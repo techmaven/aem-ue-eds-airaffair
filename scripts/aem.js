@@ -570,29 +570,71 @@ async function fetchPlaceholders(prefix = 'default') {
  * @param {string} blockName name of the block
  * @param {*} content two dimensional array or string or object of content
  */
+/* eslint-disable no-console */
 function buildBlock(blockName, content) {
+  console.log('[BLOCK CREATION] Starting buildBlock');
+  console.log('[BLOCK CREATION] Block name:', blockName);
+  console.log('[BLOCK CREATION] Content type:', typeof content);
+  console.log('[BLOCK CREATION] Content:', content);
+
   const table = Array.isArray(content) ? content : [[content]];
+  console.log('[BLOCK CREATION] Processed table structure:', table);
+  console.log('[BLOCK CREATION] Table rows count:', table.length);
+
   const blockEl = document.createElement('div');
+  console.log('[BLOCK CREATION] Created block element:', blockEl);
+
   // build image block nested div structure
   blockEl.classList.add(blockName);
-  table.forEach((row) => {
+  console.log('[BLOCK CREATION] Added block class:', blockName);
+
+  table.forEach((row, rowIndex) => {
+    console.log(`[BLOCK CREATION] Processing row ${rowIndex}:`, row);
+    console.log(`[BLOCK CREATION] Row ${rowIndex} columns count:`, row.length);
+
     const rowEl = document.createElement('div');
-    row.forEach((col) => {
+    console.log(`[BLOCK CREATION] Created row element ${rowIndex}:`, rowEl);
+
+    row.forEach((col, colIndex) => {
+      console.log(`[BLOCK CREATION] Processing column ${colIndex} in row ${rowIndex}:`, col);
+
       const colEl = document.createElement('div');
+      console.log(`[BLOCK CREATION] Created column element ${colIndex}:`, colEl);
+
       const vals = col.elems ? col.elems : [col];
-      vals.forEach((val) => {
+      console.log(`[BLOCK CREATION] Column ${colIndex} values:`, vals);
+
+      vals.forEach((val, valIndex) => {
         if (val) {
+          console.log(`[BLOCK CREATION] Processing value ${valIndex} in col ${colIndex}:`, val);
+          console.log(`[BLOCK CREATION] Value ${valIndex} type:`, typeof val);
+
           if (typeof val === 'string') {
+            console.log(`[BLOCK CREATION] Adding string content to col ${colIndex}:`, val);
             colEl.innerHTML += val;
           } else {
+            console.log(`[BLOCK CREATION] Appending element to col ${colIndex}:`, val);
             colEl.appendChild(val);
           }
+        } else {
+          console.log(`[BLOCK CREATION] Skipping null/undefined value ${valIndex} in col ${colIndex}`);
         }
       });
+
+      console.log(`[BLOCK CREATION] Final column ${colIndex} innerHTML:`, colEl.innerHTML);
       rowEl.appendChild(colEl);
     });
+
+    console.log(`[BLOCK CREATION] Final row ${rowIndex} structure:`, rowEl);
+    console.log(`[BLOCK CREATION] Final row ${rowIndex} innerHTML:`, rowEl.innerHTML);
     blockEl.appendChild(rowEl);
   });
+
+  console.log('[BLOCK CREATION] Completed buildBlock');
+  console.log('[BLOCK CREATION] Final block structure:', blockEl);
+  console.log('[BLOCK CREATION] Final block innerHTML:', blockEl.innerHTML);
+  console.log('[BLOCK CREATION] Block classes:', Array.from(blockEl.classList));
+
   return blockEl;
 }
 
@@ -601,35 +643,91 @@ function buildBlock(blockName, content) {
  * @param {Element} block The block element
  */
 async function loadBlock(block) {
+  console.log('[BLOCK LOADING] Starting loadBlock');
+  console.log('[BLOCK LOADING] Block element:', block);
+  console.log('[BLOCK LOADING] Block classes:', Array.from(block.classList));
+
   const status = block.dataset.blockStatus;
+  console.log('[BLOCK LOADING] Current block status:', status);
+
   if (status !== 'loading' && status !== 'loaded') {
+    console.log('[BLOCK LOADING] Block needs loading, proceeding...');
+
+    console.log('[BLOCK LOADING] Setting block status to "loading"');
     block.dataset.blockStatus = 'loading';
+
     const { blockName } = block.dataset;
+    console.log('[BLOCK LOADING] Block name:', blockName);
+
+    const cssPath = `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`;
+    const jsPath = `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`;
+
+    console.log('[BLOCK LOADING] CSS path:', cssPath);
+    console.log('[BLOCK LOADING] JS path:', jsPath);
+
     try {
-      const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
+      console.log('[BLOCK LOADING] Starting CSS and JS loading...');
+
+      const cssLoaded = loadCSS(cssPath);
+      console.log('[BLOCK LOADING] CSS loading promise created');
+
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
-            const mod = await import(
-              `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
-            );
+            console.log('[BLOCK LOADING] Importing block module...');
+            const mod = await import(jsPath);
+            console.log('[BLOCK LOADING] Block module imported successfully:', mod);
+
             if (mod.default) {
+              console.log('[BLOCK LOADING] Executing block decoration function...');
+              console.log('[BLOCK LOADING] Block before decoration:', block.innerHTML);
               await mod.default(block);
+              console.log('[BLOCK LOADING] Block decoration function completed');
+              console.log('[BLOCK LOADING] Block after decoration:', block.innerHTML);
+            } else {
+              console.log('[BLOCK LOADING] No default export found in block module');
             }
           } catch (error) {
             // eslint-disable-next-line no-console
-            console.log(`failed to load module for ${blockName}`, error);
+            console.log(`[BLOCK LOADING] Failed to load module for ${blockName}`, error);
+            console.log('[BLOCK LOADING] Error details:', {
+              name: error.name,
+              message: error.message,
+              stack: error.stack
+            });
           }
+          console.log('[BLOCK LOADING] Resolving decoration promise');
           resolve();
         })();
       });
+
+      console.log('[BLOCK LOADING] Waiting for CSS and decoration to complete...');
       await Promise.all([cssLoaded, decorationComplete]);
+      console.log('[BLOCK LOADING] CSS and decoration completed successfully');
+
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log(`failed to load block ${blockName}`, error);
+      console.log(`[BLOCK LOADING] Failed to load block ${blockName}`, error);
+      console.log('[BLOCK LOADING] Load error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
     }
+
+    console.log('[BLOCK LOADING] Setting block status to "loaded"');
     block.dataset.blockStatus = 'loaded';
+
+    console.log('[BLOCK LOADING] Final block state:');
+    console.log('[BLOCK LOADING] - Classes:', Array.from(block.classList));
+    console.log('[BLOCK LOADING] - Dataset:', block.dataset);
+    console.log('[BLOCK LOADING] - innerHTML:', block.innerHTML);
+  } else {
+    console.log('[BLOCK LOADING] Block does not need loading');
+    console.log('[BLOCK LOADING] Reason: Status is', status);
   }
+
+  console.log('[BLOCK LOADING] loadBlock completed, returning block');
   return block;
 }
 
@@ -638,19 +736,60 @@ async function loadBlock(block) {
  * @param {Element} block The block element
  */
 function decorateBlock(block) {
+  console.log('[BLOCK DECORATION] Starting decorateBlock');
+  console.log('[BLOCK DECORATION] Block element:', block);
+  console.log('[BLOCK DECORATION] Block classList:', Array.from(block.classList));
+  console.log('[BLOCK DECORATION] Block innerHTML:', block.innerHTML);
+
   const shortBlockName = block.classList[0];
+  console.log('[BLOCK DECORATION] Short block name:', shortBlockName);
+  console.log('[BLOCK DECORATION] Current block status:', block.dataset.blockStatus);
+
   if (shortBlockName && !block.dataset.blockStatus) {
+    console.log('[BLOCK DECORATION] Block needs decoration, proceeding...');
+
+    console.log('[BLOCK DECORATION] Adding "block" class');
     block.classList.add('block');
+
+    console.log('[BLOCK DECORATION] Setting block name dataset:', shortBlockName);
     block.dataset.blockName = shortBlockName;
+
+    console.log('[BLOCK DECORATION] Setting block status to "initialized"');
     block.dataset.blockStatus = 'initialized';
+
+    console.log('[BLOCK DECORATION] Wrapping text nodes');
     wrapTextNodes(block);
+
     const blockWrapper = block.parentElement;
+    console.log('[BLOCK DECORATION] Block wrapper element:', blockWrapper);
+    console.log('[BLOCK DECORATION] Adding wrapper class:', `${shortBlockName}-wrapper`);
     blockWrapper.classList.add(`${shortBlockName}-wrapper`);
+
     const section = block.closest('.section');
-    if (section) section.classList.add(`${shortBlockName}-container`);
+    console.log('[BLOCK DECORATION] Section element:', section);
+    if (section) {
+      console.log('[BLOCK DECORATION] Adding section container class:', `${shortBlockName}-container`);
+      section.classList.add(`${shortBlockName}-container`);
+    } else {
+      console.log('[BLOCK DECORATION] No section found for block');
+    }
+
+    console.log('[BLOCK DECORATION] Decorating buttons within block');
     // eslint-disable-next-line no-use-before-define
     decorateButtons(block);
+
+    console.log('[BLOCK DECORATION] Block decoration completed');
+    console.log('[BLOCK DECORATION] Final block classes:', Array.from(block.classList));
+    console.log('[BLOCK DECORATION] Final block dataset:', block.dataset);
+    console.log('[BLOCK DECORATION] Final wrapper classes:', Array.from(blockWrapper.classList));
+    if (section) console.log('[BLOCK DECORATION] Final section classes:', Array.from(section.classList));
+  } else {
+    console.log('[BLOCK DECORATION] Block does not need decoration');
+    if (!shortBlockName) console.log('[BLOCK DECORATION] Reason: No short block name found');
+    if (block.dataset.blockStatus) console.log('[BLOCK DECORATION] Reason: Block already has status:', block.dataset.blockStatus);
   }
+
+  console.log('[BLOCK DECORATION] decorateBlock finished');
 }
 
 /**

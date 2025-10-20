@@ -63,13 +63,27 @@ async function loadFonts() {
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
+/* eslint-disable no-console */
 function buildAutoBlocks() {
+  console.log('[AUTO BLOCK CREATION] Starting buildAutoBlocks');
+  console.log('[AUTO BLOCK CREATION] Main element:', arguments[0]);
+
   try {
+    console.log('[AUTO BLOCK CREATION] Checking for auto block patterns...');
     // TODO: add auto block, if needed
+    console.log('[AUTO BLOCK CREATION] No auto blocks configured yet');
+    console.log('[AUTO BLOCK CREATION] Auto block creation completed successfully');
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Auto Blocking failed', error);
+    console.error('[AUTO BLOCK CREATION] Auto Blocking failed', error);
+    console.log('[AUTO BLOCK CREATION] Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
   }
+
+  console.log('[AUTO BLOCK CREATION] buildAutoBlocks finished');
 }
 
 /**
