@@ -191,10 +191,20 @@
     "id": "book",
     "fields": [
       {
-        "component": "text",
+        "component": "select",
         "valueType": "string",
         "name": "classes",
-        "label": "Style"
+        "label": "Style",
+        "options": [
+          {
+            "name": "style-1",
+            "value": "style-1"
+          },
+          {
+            "name": "style-2",
+            "value": "style-2"
+          }
+        ]
       },
       {
         "component": "reference",
