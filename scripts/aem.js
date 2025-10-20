@@ -612,8 +612,65 @@ function buildBlock(blockName, content) {
           if (typeof val === 'string') {
             console.log(`[BLOCK CREATION] Adding string content to col ${colIndex}:`, val);
             colEl.innerHTML += val;
-          } else {
+          } else if (val.nodeType === Node.ELEMENT_NODE) {
+            console.log(`[BLOCK CREATION] Processing DOM element for value ${valIndex} in col ${colIndex}:`);
+            console.log('[BLOCK CREATION] - Element tag:', val.tagName);
+            console.log('[BLOCK CREATION] - Element classes:', Array.from(val.classList));
+            console.log('[BLOCK CREATION] - Element innerHTML:', val.innerHTML);
+
+            // Check for AEM authoring attributes
+            const aueAttributes = [...val.attributes].filter((attr) => attr.name.startsWith('data-aue-')
+              || attr.name.startsWith('data-richtext-')
+              || attr.name.startsWith('data-block-'));
+            if (aueAttributes.length > 0) {
+              console.log(
+                '[BLOCK CREATION] - AEM authoring attributes:',
+                aueAttributes.map((attr) => ({ name: attr.name, value: attr.value })),
+              );
+            }
+
+            // Check for child item classes and styling
+            if (val.classList.length > 0) {
+              console.log('[BLOCK CREATION] - Child item classes detected:', Array.from(val.classList));
+
+              // Look for specific patterns that indicate child items (like book items)
+              const itemClasses = Array.from(val.classList).filter((cls) => cls.includes('item')
+                || cls.includes('book')
+                || cls.includes('style-')
+                || cls.includes('component'));
+              if (itemClasses.length > 0) {
+                console.log('[BLOCK CREATION] - Child item styling classes:', itemClasses);
+              }
+            }
+
+            // Check for nested child elements within this item
+            const childElements = val.querySelectorAll('*');
+            if (childElements.length > 0) {
+              console.log(`[BLOCK CREATION] - Child item contains ${childElements.length} nested elements`);
+              childElements.forEach((child, childIndex) => {
+                if (child.classList.length > 0 || child.hasAttributes()) {
+                  const childAttrs = [...child.attributes].map((attr) => ({
+                    name: attr.name,
+                    value: attr.value,
+                  }));
+                  console.log(`[BLOCK CREATION] - Nested element ${childIndex}:`, {
+                    tag: child.tagName,
+                    classes: Array.from(child.classList),
+                    attributes: childAttrs,
+                  });
+                }
+              });
+            }
+
+            // Check dataset properties
+            if (Object.keys(val.dataset).length > 0) {
+              console.log('[BLOCK CREATION] - Child item dataset:', val.dataset);
+            }
+
             console.log(`[BLOCK CREATION] Appending element to col ${colIndex}:`, val);
+            colEl.appendChild(val);
+          } else {
+            console.log(`[BLOCK CREATION] Appending non-element object to col ${colIndex}:`, val);
             colEl.appendChild(val);
           }
         } else {
@@ -634,6 +691,66 @@ function buildBlock(blockName, content) {
   console.log('[BLOCK CREATION] Final block structure:', blockEl);
   console.log('[BLOCK CREATION] Final block innerHTML:', blockEl.innerHTML);
   console.log('[BLOCK CREATION] Block classes:', Array.from(blockEl.classList));
+
+  // Summary analysis of child items within the block
+  console.log('[BLOCK CREATION] === CHILD ITEM ANALYSIS SUMMARY ===');
+  const allChildElements = blockEl.querySelectorAll('*');
+  console.log(`[BLOCK CREATION] Total child elements in block: ${allChildElements.length}`);
+
+  // Analyze child items with AEM authoring attributes (likely block items)
+  const aueSelector = '[data-aue-resource], [data-aue-type], [data-richtext-resource]';
+  const aueElements = blockEl.querySelectorAll(aueSelector);
+  if (aueElements.length > 0) {
+    console.log(`[BLOCK CREATION] Found ${aueElements.length} AEM-authored child items:`);
+    aueElements.forEach((element, index) => {
+      const aueResource = element.getAttribute('data-aue-resource');
+      const aueType = element.getAttribute('data-aue-type');
+      console.log(`[BLOCK CREATION] - Child item ${index}:`, {
+        tag: element.tagName,
+        aueResource,
+        aueType,
+        classes: Array.from(element.classList),
+        hasContent: element.innerHTML.length > 0,
+      });
+    });
+  }
+
+  // Analyze styling classes across all child items
+  const styledSelector = '[class*="style-"], [class*="item"], [class*="book"], [class*="component"]';
+  const styledElements = blockEl.querySelectorAll(styledSelector);
+  if (styledElements.length > 0) {
+    console.log(`[BLOCK CREATION] Found ${styledElements.length} styled child items:`);
+    const styleClasses = new Set();
+    styledElements.forEach((element, index) => {
+      const relevantClasses = Array.from(element.classList).filter((cls) => cls.includes('style-')
+        || cls.includes('item')
+        || cls.includes('book')
+        || cls.includes('component'));
+      relevantClasses.forEach((cls) => styleClasses.add(cls));
+      if (relevantClasses.length > 0) {
+        console.log(`[BLOCK CREATION] - Styled element ${index}:`, {
+          tag: element.tagName,
+          relevantClasses,
+          allClasses: Array.from(element.classList),
+        });
+      }
+    });
+    console.log('[BLOCK CREATION] Unique styling classes found:', Array.from(styleClasses).sort());
+  }
+
+  // Check for nested block structures
+  const nestedBlocks = blockEl.querySelectorAll('.block');
+  if (nestedBlocks.length > 0) {
+    console.log(`[BLOCK CREATION] WARNING: Found ${nestedBlocks.length} nested blocks (unusual):`);
+    nestedBlocks.forEach((nestedBlock, index) => {
+      console.log(`[BLOCK CREATION] - Nested block ${index}:`, {
+        classes: Array.from(nestedBlock.classList),
+        blockName: nestedBlock.dataset.blockName,
+      });
+    });
+  }
+
+  console.log('[BLOCK CREATION] === END CHILD ITEM ANALYSIS ===');
 
   return blockEl;
 }
@@ -693,25 +810,23 @@ async function loadBlock(block) {
             console.log('[BLOCK LOADING] Error details:', {
               name: error.name,
               message: error.message,
-              stack: error.stack
+              stack: error.stack,
             });
           }
           console.log('[BLOCK LOADING] Resolving decoration promise');
           resolve();
         })();
       });
-
       console.log('[BLOCK LOADING] Waiting for CSS and decoration to complete...');
       await Promise.all([cssLoaded, decorationComplete]);
       console.log('[BLOCK LOADING] CSS and decoration completed successfully');
-
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(`[BLOCK LOADING] Failed to load block ${blockName}`, error);
       console.log('[BLOCK LOADING] Load error details:', {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
     }
 
