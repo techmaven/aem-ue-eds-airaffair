@@ -197,12 +197,12 @@
         "label": "Style",
         "options": [
           {
-            "name": "style-1",
-            "value": "style-1"
+            "name": "style-3",
+            "value": "style-3"
           },
           {
-            "name": "style-2",
-            "value": "style-2"
+            "name": "style-4",
+            "value": "style-4"
           }
         ]
       },
