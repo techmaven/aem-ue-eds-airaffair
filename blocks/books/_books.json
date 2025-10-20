@@ -61,6 +61,7 @@
           "component": "select",
           "valueType": "string",
           "name": "classes",
+          "value": "",
           "label": "Style",
           "options": [
             {
