@@ -205,7 +205,8 @@
             "name": "style-4",
             "value": "style-4"
           }
-        ]
+        ],
+        "collapse": "attribute"
       },
       {
         "component": "reference",
