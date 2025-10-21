@@ -21,4 +21,27 @@ export default function decorate(block) {
   });
   block.textContent = '';
   block.append(ul);
+
+  // add classes to the parent element based on the text content of the child p element
+  // This can be added to scripts.js if it's needed for other components
+  block.querySelectorAll('div > p').forEach((p) => {
+    if (p.textContent.trim().startsWith('book,')) {
+      const parts = p.textContent.split(',').map((s) => s.trim());
+      if (parts.length === 2) {
+        const div = p.parentElement;
+        const parent = div.parentElement;
+        if (div && parent) {
+          div.parentElement.classList.add(parts[1]);
+        }
+      }
+      // Always remove the div if the name of the block is present in the text content
+      const div = p.parentElement;
+      if (div) div.remove();
+    }
+  });
+
+  if (block.firstElementChild && block.firstElementChild.children) {
+    const cols = [...block.firstElementChild.children];
+    block.classList.add(`cc-${cols.length}-cols`);
+  }
 }
