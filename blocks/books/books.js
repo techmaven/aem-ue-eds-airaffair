@@ -39,9 +39,4 @@ export default function decorate(block) {
       if (div) div.remove();
     }
   });
-
-  if (block.firstElementChild && block.firstElementChild.children) {
-    const cols = [...block.firstElementChild.children];
-    block.classList.add(`cc-${cols.length}-cols`);
-  }
 }
