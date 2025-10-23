@@ -40,14 +40,15 @@
           "component": "select",
           "valueType": "string",
           "name": "classes",
+          "value": "books-style-1",
           "label": "Style",
           "options": [
             {
-              "name": "style-1",
-              "value": "style-1"
+              "name": "books-style-1",
+              "value": "books-style-1"
             },
             {
-              "name": "style-2",
+              "name": "books-style-2",
               "value": "style-2"
             }
           ]
@@ -61,15 +62,16 @@
           "component": "select",
           "valueType": "string",
           "name": "classes",
+          "value": "book-style-1",
           "label": "Style",
           "options": [
             {
-              "name": "style-1",
-              "value": "style-1"
+              "name": "book- style-1",
+              "value": "book-style-1"
             },
             {
-              "name": "style-2",
-              "value": "style-2"
+              "name": "book-style-2",
+              "value": "book-style-2"
             }
           ]
         },
